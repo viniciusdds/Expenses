@@ -1,3 +1,4 @@
+import 'package:expenses/components/chart.dart';
 import 'package:expenses/components/transaction_form.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -21,6 +22,11 @@ class ExpensesApp extends StatelessWidget {
                 fontFamily: 'OpenSans',
                 fontSize: 16,
                 fontWeight: FontWeight.bold
+            ),
+            button: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 13
             )
           ),
           appBarTheme: AppBarTheme(
@@ -29,7 +35,7 @@ class ExpensesApp extends StatelessWidget {
                 fontFamily: 'OpenSans',
                 fontSize: 20,
                 fontWeight: FontWeight.bold
-              )
+              ),
             )
           )
         ),
@@ -48,21 +54,46 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  final _transactions = [
+  final List<Transaction> _transactions = [
+    Transaction(
+        id: 't0',
+        title: 'Conta Antiga',
+        value: 400.00,
+        date: DateTime.now().subtract(Duration(days: 33)),
+    ),
     Transaction(
         id: 't1',
-        title: 'Novo Tênis de Corrida',
-        value: 310.76,
-        date: DateTime.now()
+        title: 'Conta de Água',
+        value: 211.30,
+        date:  DateTime.now().subtract(Duration(days: 3)),
     ),
     Transaction(
-        id: 't2',
-        title: 'Conta de Luz',
-        value: 211.30,
-        date: DateTime.now()
+      id: 't2',
+      title: 'Conta de Luz',
+      value: 211.30,
+      date:  DateTime.now().subtract(Duration(days: 4)),
     ),
-
+    Transaction(
+      id: 't3',
+      title: 'Cartão de Credito',
+      value: 100000.30,
+      date:  DateTime.now(),
+    ),
+    Transaction(
+      id: 't4',
+      title: 'Lanche no Bob`s',
+      value: 11.30,
+      date:  DateTime.now(),
+    ),
   ];
+
+  List<Transaction> get _recentTransactions{
+    return _transactions.where((tr) {
+      return tr.date.isAfter(DateTime.now().subtract(
+          Duration(days: 7)
+      ));
+    }).toList();
+  }
 
   _addTransaction(String title, double value){
     final newTransaction = Transaction(
@@ -104,13 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              child: Card(
-                color: Colors.blue,
-                child: Text("Grafico"),
-                elevation: 5,
-              ),
-            ),
+            Chart(_recentTransactions),
             TransactionList(_transactions),
           ],
         ),
